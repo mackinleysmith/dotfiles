@@ -1,6 +1,32 @@
 set nocp
-source ~/dotfiles/vim/.vim.ruby/autoload/pathogen.vim
-execute pathogen#infect('~/dotfiles/vim/.vim.ruby/bundle/{}')
+" source ~/dotfiles/vim/.vim.ruby/autoload/pathogen.vim
+" execute pathogen#infect('~/dotfiles/vim/.vim.ruby/bundle/{}')
+
+filetype off
+" set runtimepath+=~/dotfiles/vim/.vim.ruby/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/Vundle.vim
+" call vundle#rc()
+call vundle#rc(expand('~/dotfiles/vim/.vim.ruby/bundle'))
+
+Bundle 'gmarik/vundle'
+Bundle 'tpope/vim-bundler'
+Bundle 'tpope/vim-rvm'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-haml'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-surround'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'kien/ctrlp.vim'
+Bundle 'nathanaelkane/vim-indent-guides'
+Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'thoughtbot/vim-rspec'
+Bundle 'tomtom/tcomment_vim'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'jpo/vim-railscasts-theme'
 
 colorscheme railscasts
 
