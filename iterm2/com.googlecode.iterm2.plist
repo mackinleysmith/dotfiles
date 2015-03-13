@@ -1151,7 +1151,7 @@
 			<key>Window Type</key>
 			<integer>0</integer>
 			<key>Working Directory</key>
-			<string>/Users/smit1625/Sites</string>
+			<string>~/Sites</string>
 		</dict>
 		<dict>
 			<key>ASCII Anti Aliased</key>
@@ -1648,7 +1648,7 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>/Users/smit1625/dotfiles/iterm2</string>
+	<string>~/dotfiles/iterm2</string>
 	<key>PromptOnQuit</key>
 	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
