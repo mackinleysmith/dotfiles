@@ -59,6 +59,15 @@ set tm=2000
 " Allow the normal use of "," by pressing it twice
 noremap ,, ,
 
+let g:rspec_command = 'call Send_to_Tmux("spring rspec {spec}\n")'
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+vmap <C-c><C-c> <Plug>SendSelectionToTmux
+nmap <C-c><C-c> <Plug>NormalModeSendToTmux
+nmap <C-c>r <Plug>SetTmuxVars
+
 " NERDTree {{{
 
 " Close nerdtree after a file is selected
