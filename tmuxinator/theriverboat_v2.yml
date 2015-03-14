@@ -24,12 +24,18 @@ tmux_command: tmate
 # startup_window: logs
 
 windows:
-  - editor:
+  # - editor:
+  #   - tmate -S /tmp/tmate.sock new-session -d
+  #   - tmate -S /tmp/tmate.sock wait tmate-ready
+  #   - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+  #   - rvim
+  - background:
       layout: main-vertical
       panes:
-        - rvim
+        - s rails s
+        # - s rspec
         - guard
-        # - env TMUX='' tmate -c guard
+        - tail -f log/development.log
   # - tests: s rspec
   # - server: s rails s
   # - logs: tail -f log/development.log
