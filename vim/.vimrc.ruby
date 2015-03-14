@@ -26,6 +26,7 @@ Bundle 'thoughtbot/vim-rspec'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'vim-ruby/vim-ruby'
+Bundle 'jgdavey/tslime.vim'
 Bundle 'jpo/vim-railscasts-theme'
 
 colorscheme railscasts
