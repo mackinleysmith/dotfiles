@@ -8,7 +8,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 " call vundle#rc()
 call vundle#rc(expand('~/dotfiles/vim/.vim.ruby/bundle'))
 
-Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-bundler'
 Bundle 'tpope/vim-rvm'
 Bundle 'tpope/vim-endwise'
