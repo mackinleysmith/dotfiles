@@ -4,7 +4,7 @@ name: theriverboat_v2
 root: ~/Sites/theriverboat_v2
 
 # Optional tmux socket
-socket_name: foo
+# socket_name: foo
 
 # Runs before everything. Use it to start daemons etc.
 # pre: sudo /etc/rc.d/mysqld start
@@ -17,23 +17,18 @@ socket_name: foo
 
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
 # tmux_command: byobu
-tmux_command: tmate
+# tmux_command: tmate
 # tmux_command: tmux
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
 # startup_window: logs
 
 windows:
-  # - editor:
-  #   - tmate -S /tmp/tmate.sock new-session -d
-  #   - tmate -S /tmp/tmate.sock wait tmate-ready
-  #   - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-  #   - rvim
   - background:
       layout: main-vertical
       panes:
+        - s rails c
         - s rails s
-        # - s rspec
         - guard
         - tail -f log/development.log
   # - tests: s rspec
