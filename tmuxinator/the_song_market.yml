@@ -1,7 +1,7 @@
-# ~/.tmuxinator/theriverboat_v2.yml
+# ~/.tmuxinator/the_song_market.yml
 
-name: theriverboat_v2
-root: ~/Sites/theriverboat_v2
+name: the_song_market
+root: ~/Sites/the_song_market
 
 # Optional tmux socket
 # socket_name: foo

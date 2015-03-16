@@ -1,11 +1,6 @@
 set nocp
-" source ~/dotfiles/vim/.vim.ruby/autoload/pathogen.vim
-" execute pathogen#infect('~/dotfiles/vim/.vim.ruby/bundle/{}')
-
 filetype off
-" set runtimepath+=~/dotfiles/vim/.vim.ruby/bundle/Vundle.vim
 set rtp+=~/.vim/bundle/Vundle.vim
-" call vundle#rc()
 call vundle#rc(expand('~/dotfiles/vim/.vim.ruby/bundle'))
 
 Bundle 'tpope/vim-bundler'
@@ -27,7 +22,6 @@ Bundle 'tomtom/tcomment_vim'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'smit1625/tslime.vim'
-" Bundle 'sjl/tslime2.vim'
 Bundle 'jpo/vim-railscasts-theme'
 
 colorscheme railscasts
@@ -43,6 +37,7 @@ set ruler
 set ttyfast
 set mouse=a
 set ttymouse=xterm2
+set colorcolumn=80
 
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=0
