@@ -5,12 +5,14 @@ Run a headless tmuxinator session for remote slave machines to connect to.
 
 Usage: #{File.basename $0} [command]
 
-Eg:
+Commands:
 
-rmux start
-rmux stop
-rmux connect
-rmux enslave
+rmux new                          Create a new tmuxinator configuration.
+rmux start [project_name]         Start an rmux session for a project.
+rmux stop  [project_name]         Stop an rmux session for a project.
+rmux list                         List running rmux sessions on this machine.
+rmux connect [project] user@host  Connect as a slave to a remote rmux session.
+rmux enslave [project] user@host  Connect a slave to a local rmux session.
 
 HELP
 exit; end
@@ -21,8 +23,7 @@ def debug(msg) $stderr.puts "> #{msg}" end
 
 @command = ARGV[0]
 @options = ARGV[1..-1]
-debug("Options received: #{@options}") if @options.any?
-@socket = '/tmp/tmate.sock'
+# debug("Options received: #{@options}") if @options.any?
 
 def get_project_name
   if @options.any?
@@ -40,13 +41,18 @@ def get_project_name
 end
 @project_name = get_project_name
 
+def get_local_username
+  `echo $USER`.strip
+end
 def get_local_hostname
   `scutil --get LocalHostName`.strip.downcase + '.local'
 end
-@local_hostname = get_local_hostname
+@local_ssh_addr = "#{get_local_username}@#{get_local_hostname}"
+
+@socket = "/tmp/#{@project_name}.sock"
 
 def project_name_matcher
-  pn = @project_name
+  pn = @project_name.gsub '-', '\-'
   "[t]mux.*[#{pn[0]}]#{pn[1..-1]}"
 end
 
@@ -55,17 +61,35 @@ def already_running?
   output.length > 0
 end
 
+def format_command(command) command.gsub(/\ [ ]+/, ' ').strip end
+def format_and_run_command(command) `#{format_command(command)}`.strip end
+
 def issue_server_start_command!
-  `tmux -S #{@socket} new-session -d "env TMUX='' mux start #{@project_name}"`
+  `tmux -vvvv -S "#{@socket}" new-session -d "env TMUX='' mux start #{@project_name}"`
 end
 
 def issue_server_stop_command!
   `pkill -f "#{project_name_matcher}"`
 end
 
-def connection_command
-  user_name = `echo $USER`.strip
-  "ssh #{user_name}@#{@local_hostname} -t \\'tmux -S #{@socket} attach\\'"
+def connection_command(local=false)
+  local_command = "tmux -S #{@socket} a"
+  return local_command if local
+  "ssh #{@local_ssh_addr} -t '#{local_command}'"
+end
+
+def enter_slave_mode_command(local=false)
+  tell_iterm_app     = 'tell application "iTerm"'
+  tell_iterm_process = 'tell application "System Events" to tell process "iTerm"'
+  format_command <<-BASH
+    osascript \
+          -e '#{tell_iterm_app} to activate' \
+          -e '#{tell_iterm_process} to keystroke \"n\" using command down' \
+          -e 'delay 1' \
+          -e '#{tell_iterm_app} to tell session -1 of current terminal to \
+              write text "#{connection_command(local).gsub("'", '\\\\\'')}"' \
+          -e '#{tell_iterm_process} to keystroke return using command down'
+  BASH
 end
 
 def show_progress_until(condition_lambda, timeout=10)
@@ -89,9 +113,14 @@ if @command
     output = issue_server_start_command!
     success = show_progress_until ->{ already_running? }
     if success
-      debug 'Rmux started successfully.'
-      puts
-      puts output
+      sleep 1
+      if $? && already_running?
+        debug 'Rmux started successfully.'
+        debug "To connect: #{connection_command}"
+        puts
+      else
+        fatal 'Rmux failed to start!'
+      end
     else
       fatal 'Rmux failed to start after ten seconds!'
     end
@@ -100,35 +129,59 @@ if @command
     debug "Stopping rmux project '#{@project_name}'..."
     output = issue_server_stop_command!
     success = show_progress_until ->{ !already_running? }
-    if success
+    if success && $?
       debug 'Rmux stopped successfully.'
       puts
-      puts output
     else
       fatal 'Rmux failed to stop after ten seconds!'
     end
+  when 'restart'
+    fatal("Rmux project '#{@project_name}' is not running!") unless already_running?
+    puts `rmux stop #{@project_name} #{@options if @options.any?}`.strip
+    sleep(0.5)
+    puts `rmux start #{@project_name} #{@options if @options.any?}`.strip
+  when 'new'
+    command = "env EDITOR='vim' tmuxinator new #{@project_name}"
+    output = exec command
+    puts
+  when 'list'
+    output = format_and_run_command <<-BASH
+      ps aux | grep tmux | grep "env TMUX='' mux start" \
+             | grep -v "[g]rep" | sed -e "s/.*mux start \\(.*\\)/\\1/"
+    BASH
+    running_projects = output.split("\n")
+    pcount = running_projects.count
+    if pcount > 0
+      puts "#{pcount} project#{pcount>1 ? 's':''} currently running:"
+      puts running_projects
+      puts
+    else
+      fatal "There are no rmux projects currently running."
+    end
   when 'connect'
-    fatal("This command isn't implemented yet!")
+    slave_address = @options[0]
+    if (is_local=slave_address.nil?)
+      slave_address = @local_ssh_addr
+      fatal("Rmux project '#{@project_name}' is not running!") unless already_running?
+    end
+    command = enter_slave_mode_command(is_local)
+    puts command
+    puts `#{command}`.strip
   when 'enslave'
     fatal("Rmux project '#{@project_name}' is not running!") unless already_running?
-    fatal("You must specify a slave machine to connect!") unless @options.any?
+    fatal("You must specify a machine to enslave! Eg: user@ip") unless @options.any?
     slave_address = @options[0]
     debug "Attempting to connect #{slave_address} to rmux project '#{@project_name}'..."
-    tell_iterm_app     = 'tell application \"iTerm\"'
-    tell_iterm_process = 'tell application \"System Events\" to tell process \"iTerm\"'
-    command = <<-COMMAND
-      ssh #{slave_address} "osascript -e '#{tell_iterm_app} to activate' \
-        -e '#{tell_iterm_process} to keystroke \\"n\\" using command down' \
-        -e 'delay 1' \
-        -e '#{tell_iterm_process} to keystroke return using command down' \
-        -e '#{tell_iterm_app} to tell session -1 of current terminal to \
-            write text \\"#{connection_command}\\"'"
-    COMMAND
-    command.gsub!(/\ [ ]+/, ' ')
-    output = `#{command}`
+    output = format_and_run_command <<-BASH
+      ssh #{slave_address} "#{enter_slave_mode_command.gsub('"', '\"')}"
+    BASH
     puts output
-    debug "Rmux client connected successfully."
-    puts
+    if $?
+      debug "Rmux client connected successfully."
+      puts
+    else
+      fatal 'Rmux client failed to start.'
+    end
   else
     fatal "Command not recognized!"
   end
