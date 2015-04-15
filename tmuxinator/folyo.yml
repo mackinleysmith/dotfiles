@@ -1,7 +1,7 @@
-# ~/.tmuxinator/theriverboat_v2.yml
+# ~/.tmuxinator/folyo.yml
 
-name: theriverboat_v2
-root: ~/Sites/theriverboat_v2
+name: folyo
+root: ~/Sites/folyo
 
 # Optional tmux socket
 # socket_name: foo
@@ -17,8 +17,6 @@ pre_window: rvm use default
 # tmux_options: -f ~/.tmux.mac.conf
 
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
-# tmux_command: byobu
-# tmux_command: tmate
 tmux_command: reattach-to-user-namespace tmux
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
@@ -29,8 +27,5 @@ windows:
       layout: main-vertical
       panes:
         - #empty
-        - s rails s
-        - s rails c
-  # - tests: s rspec
-  # - server: s rails s
-  # - logs: tail -f log/development.log
+        - spring rails s
+        - spring rails c

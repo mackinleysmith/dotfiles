@@ -1,1 +1,4 @@
 set shell=/bin/bash
+let g:NERDTreeMapHelp = '<F1>'
+let g:NERDTreeMapOpenSplit = '<C-x>'
+let g:NERDTreeMapOpenVSplit = '<C-v>'

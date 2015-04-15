@@ -11,6 +11,8 @@ Bundle 'tpope/vim-haml'
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/timl'
+Bundle 'tpope/vim-obsession'
+Bundle 'tpope/vim-repeat'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'kien/ctrlp.vim'
 Bundle 'nathanaelkane/vim-indent-guides'
@@ -42,6 +44,15 @@ set colorcolumn=80
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=5
+
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" upon hitting escape to change modes,
+" send successive move-left and move-right
+" commands to immediately redraw the cursor
+" inoremap <special> <Esc> <Esc>hlll
+" don't blink the cursor
+set guicursor+=i:blinkwait0
 
 let g:rails_statusline = 1
 
@@ -97,6 +108,40 @@ endfunction
 " If nerd tree is closed, find current file, if open, close it
 nmap <silent> <leader>f <ESC>:call ToggleFindNerd()<CR>
 nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
+
+let g:NERDTreeMapHelp = '<F1>'
+let g:NERDTreeMapOpenSplit = '<C-x>'
+let g:NERDTreeMapOpenVSplit = '<C-v>'
+
+" Ctrl-P with Matcher
+let g:path_to_matcher = "/usr/local/bin/matcher"
+
+let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files . -co --exclude-standard']
+
+let g:ctrlp_match_func = { 'match': 'GoodMatch' }
+
+function! GoodMatch(items, str, limit, mmode, ispath, crfile, regex)
+
+  " Create a cache file if not yet exists
+  let cachefile = ctrlp#utils#cachedir().'/matcher.cache'
+  if !( filereadable(cachefile) && a:items == readfile(cachefile) )
+    call writefile(a:items, cachefile)
+  endif
+  if !filereadable(cachefile)
+    return []
+  endif
+
+  " a:mmode is currently ignored. In the future, we should probably do
+  " something about that. the matcher behaves like "full-line".
+  let cmd = g:path_to_matcher.' --limit '.a:limit.' --manifest '.cachefile.' '
+  if !( exists('g:ctrlp_dotfiles') && g:ctrlp_dotfiles )
+    let cmd = cmd.'--no-dotfiles '
+  endif
+  let cmd = cmd.a:str
+
+  return split(system(cmd), "\n")
+
+endfunction
 
 " Syntastic
 syntax on
