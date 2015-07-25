@@ -23,8 +23,11 @@ alias hvi='vi -u ~/dotfiles/vim/.vimrc.haskell'
 alias hvim='hvi'
 alias rvi='vi -u ~/dotfiles/vim/.vimrc.ruby'
 alias rvim='rvi'
+alias tivi='vi -u ~/dotfiles/vim/.vimrc.titanium'
+alias tivim='tivi'
 
 set PATH ~/.cabal/bin $PATH
+set PATH /Library/Haskell/bin $PATH
 set PATH ~/dotfiles/bin $PATH
 
 set EDITOR rvi 

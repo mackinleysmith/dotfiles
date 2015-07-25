@@ -1,7 +1,7 @@
-# ~/.tmuxinator/theriverboat_v2.yml
+# ~/.tmuxinator/kollecto-survey-builder.yml
 
-name: theriverboat_v2
-root: ~/Sites/theriverboat_v2
+name: kollecto-survey-builder
+root: ~/Sites/kollecto-survey-builder
 
 # Optional tmux socket
 # socket_name: foo
@@ -11,14 +11,12 @@ root: ~/Sites/theriverboat_v2
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 # pre_window: rbenv shell 2.0.0-p247
-pre_window: rvm use default
+pre_window: rvm use 2.2.2
 
 # Pass command line options to tmux. Useful for specifying a different tmux.conf.
 # tmux_options: -f ~/.tmux.mac.conf
 
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
-# tmux_command: byobu
-# tmux_command: tmate
 tmux_command: reattach-to-user-namespace tmux
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
@@ -28,11 +26,7 @@ windows:
   - background:
       layout: main-vertical
       panes:
-        - main:
-          - bundle exec rake sunspot:solr:start
-          - bundle exec rake sunspot:solr:start RAILS_ENV=test
-        - s rails s
-        - s rails c
-  # - tests: s rspec
-  # - server: s rails s
-  # - logs: tail -f log/development.log
+        - #empty
+        - spring rails s
+        - sidekiq
+        - spring rails c

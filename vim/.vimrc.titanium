@@ -1,18 +1,13 @@
 set nocp
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc(expand('~/dotfiles/vim/.vim.ruby/bundle'))
+call vundle#rc(expand('~/dotfiles/vim/.vim.titanium/bundle'))
 
-Bundle 'tpope/vim-bundler'
-Bundle 'tpope/vim-rvm'
 Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-haml'
-Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/timl'
 Bundle 'tpope/vim-obsession'
-" Bundle 'dhruvasagar/vim-prosession'
 Bundle 'tpope/vim-repeat'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'kien/ctrlp.vim'
@@ -23,14 +18,12 @@ Bundle 'terryma/vim-multiple-cursors'
 Bundle 'thoughtbot/vim-rspec'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'Valloric/YouCompleteMe'
-Bundle 'vim-ruby/vim-ruby'
 Bundle 'smit1625/tslime.vim'
-Bundle 'suan/vim-instant-markdown'
-" Bundle 'godlygeek/tabular'
-" Bundle 'plasticboy/vim-markdown'
-Bundle 'jpo/vim-railscasts-theme'
+Bundle 'pekepeke/titanium-vim'
+Bundle 'mbadran/headlights'
+Bundle 'lyxell/pride.vim'
 
-colorscheme railscasts
+colorscheme pride
 
 set shell=/bin/bash
 set tags=./tags
@@ -51,6 +44,9 @@ let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=5
 
+let &colorcolumn=join(range(81,999),",")
+autocmd VimEnter,Colorscheme * :hi ColorColumn ctermbg=233
+
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 " upon hitting escape to change modes,
@@ -60,7 +56,7 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 " don't blink the cursor
 set guicursor+=i:blinkwait0
 
-let g:rails_statusline = 1
+" let g:rails_statusline = 1
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
@@ -74,6 +70,7 @@ set tm=2000
 noremap ,, ,
 
 function! Interrupt_and_Send_to_Tmux(command)
+  :wall
   call Send_keys_to_Tmux("C-c")
   call Send_to_Tmux(a:command)
 endfunction
@@ -119,7 +116,7 @@ endfunction
 " NERDTree {{{
 
 " Close nerdtree after a file is selected
-let NERDTreeQuitOnOpen=1
+let NERDTreeQuitOnOpen = 1
 
 function! IsNERDTreeOpen()
   return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -205,25 +202,39 @@ augroup resCur
   autocmd BufWinEnter * call ResCur()
 augroup END
 
-" RVM
-set statusline=
-set statusline+=%<                       " cut at start
-set statusline+=%2*\ [%n%H%M%R%W]\ %*       " buffer number, and flags
-set statusline+=\ 
-set statusline+=%-40f                    " relative path
-set statusline+=%=                        " seperate between right- and left-aligned
-set statusline+=%1*\ %y\ %*%*               " file type
-set statusline+=\ 
-set statusline+=%10\((%l/%L)%)            " line and column
-set statusline+=\ 
-set statusline+=%P                        " percentage of file
-set statusline+=\ 
-set statusline+=%1*\ %{rvm#statusline()}\ 
-
+" Headlights setup
+let g:headlights_run_on_startup = 1
+let g:headlights_use_plugin_menu = 1
+let g:headlights_smart_menus = 1
 if !has("gui_running")
   :source $VIMRUNTIME/menu.vim
   :set wildmenu
   :set cpoptions-=<
-  " :set wildcharm=<C-Z>
-  " :map <F4> :emenu <C-Z>
+  :set wildcharm=<C-Z>
+  :map <F4> :emenu <C-Z>
 endif
+
+function! s:ExecuteInShell(command)
+  set shell=/usr/local/bin/fish
+  setlocal autoread
+  let command = join(map(split(a:command), 'expand(v:val)'))
+  let winnr = bufwinnr('^' . command . '$')
+  silent! execute  winnr < 0 ? 'botright new ' . fnameescape(command) : winnr . 'wincmd w'
+  setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+  echo 'Execute ' . command . '...'
+  silent! execute 'silent %!'. command
+  silent! execute 'resize ' . line('$')
+  silent! redraw
+  silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+  silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>'
+  echo 'Shell command ' . command . ' executed.'
+  set shell=/bin/bash
+  setlocal noautoread
+endfunction
+" command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+" map <Leader>cb :call <SID>ExecuteInShell('rvm use default; ./compile_app.rb compile')<CR>
+" map <Leader>cd :call <SID>ExecuteInShell('rvm use default; ./compile_app.rb deploy')<CR>
+
+map <Leader>b :call Interrupt_and_Send_to_Tmux("./compile_app.rb compile\n")<CR>
+map <Leader>dd :call Interrupt_and_Send_to_Tmux("./compile_app.rb deploy\n")<CR>
+map <Leader>di :call Interrupt_and_Send_to_Tmux("./compile_app.rb deploy -p ios\n")<CR>

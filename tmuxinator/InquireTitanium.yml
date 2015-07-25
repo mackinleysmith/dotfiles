@@ -1,7 +1,7 @@
-# ~/.tmuxinator/theriverboat_v2.yml
+# ~/.tmuxinator/InquireTitanium.yml
 
-name: theriverboat_v2
-root: ~/Sites/theriverboat_v2
+name: InquireTitanium
+root: ~/Sites/InquireTitanium
 
 # Optional tmux socket
 # socket_name: foo
@@ -17,8 +17,6 @@ pre_window: rvm use default
 # tmux_options: -f ~/.tmux.mac.conf
 
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
-# tmux_command: byobu
-# tmux_command: tmate
 tmux_command: reattach-to-user-namespace tmux
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
@@ -28,11 +26,4 @@ windows:
   - background:
       layout: main-vertical
       panes:
-        - main:
-          - bundle exec rake sunspot:solr:start
-          - bundle exec rake sunspot:solr:start RAILS_ENV=test
-        - s rails s
-        - s rails c
-  # - tests: s rspec
-  # - server: s rails s
-  # - logs: tail -f log/development.log
+        - #empty

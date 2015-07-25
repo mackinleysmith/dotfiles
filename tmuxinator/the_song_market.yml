@@ -11,6 +11,7 @@ root: ~/Sites/the_song_market
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 # pre_window: rbenv shell 2.0.0-p247
+pre_window: rvm use default
 
 # Pass command line options to tmux. Useful for specifying a different tmux.conf.
 # tmux_options: -f ~/.tmux.mac.conf
@@ -27,9 +28,11 @@ windows:
   - background:
       layout: main-vertical
       panes:
+        - main:
+          - bundle exec rake sunspot:solr:start
+          - bundle exec rake sunspot:solr:start RAILS_ENV=test
         - s rails c
         - s rails s
-        - guard
   # - tests: s rspec
   # - server: s rails s
   # - logs: tail -f log/development.log
