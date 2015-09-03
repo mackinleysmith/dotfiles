@@ -19,11 +19,11 @@ set fish_custom $HOME/dotfiles/oh-my-fish
 # Aliases
 alias s='spring'
 alias vi='/usr/local/Cellar/vim/7.4.488/bin/vim'
-alias hvi='vi -u ~/dotfiles/vim/.vimrc.haskell'
+alias hvi='vi -u ~/.dotfiles/vim/.vimrc.haskell'
 alias hvim='hvi'
-alias rvi='vi -u ~/dotfiles/vim/.vimrc.ruby'
+alias rvi='vi -u ~/.dotfiles/vim/.vimrc.ruby'
 alias rvim='rvi'
-alias tivi='vi -u ~/dotfiles/vim/.vimrc.titanium'
+alias tivi='vi -u ~/.dotfiles/vim/.vimrc.titanium'
 alias tivim='tivi'
 
 set PATH ~/.cabal/bin $PATH
