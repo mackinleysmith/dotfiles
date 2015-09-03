@@ -69,10 +69,26 @@ set tm=2000
 " Allow the normal use of "," by pressing it twice
 noremap ,, ,
 
+" Disable highlighting on Enter
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
 function! Interrupt_and_Send_to_Tmux(command)
   :wall
   call Send_keys_to_Tmux("C-c")
   call Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_with_Preceding_Keys(keys, command)
+  :wall
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux(a:keys)
+  call Interrupt_and_Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_Pane(pane, command)
+  :wall
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux("q")
+  call Send_keys_to_Tmux(a:pane)
+  call Interrupt_and_Send_to_Tmux(a:command)
 endfunction
 
 function! SetRspecCommand()
@@ -235,6 +251,27 @@ endfunction
 " map <Leader>cb :call <SID>ExecuteInShell('rvm use default; ./compile_app.rb compile')<CR>
 " map <Leader>cd :call <SID>ExecuteInShell('rvm use default; ./compile_app.rb deploy')<CR>
 
-map <Leader>b :call Interrupt_and_Send_to_Tmux("./compile_app.rb compile\n")<CR>
-map <Leader>dd :call Interrupt_and_Send_to_Tmux("./compile_app.rb deploy\n")<CR>
-map <Leader>di :call Interrupt_and_Send_to_Tmux("./compile_app.rb deploy -p ios\n")<CR>
+function! Deploy_to_iPad()
+  call Interrupt_and_Send_to_Tmux_Pane(0, "platinum deploy -p ios\n")
+endfunction
+function! Deploy_to_Xcode()
+  call Interrupt_and_Send_to_Tmux_Pane(1, "platinum deploy -p ios -T xcode\n")
+endfunction
+function! Deploy_to_Simulator()
+  call Interrupt_and_Send_to_Tmux_Pane(1, "platinum deploy -p ios -T simulator\n")
+endfunction
+function! Deploy_to_Testfairy()
+  call Interrupt_and_Send_to_Tmux_Pane(0, "platinum deploy -p ios -T dist-adhoc\n")
+endfunction
+function! Deploy_to_All()
+  call Deploy_to_iPad()
+  call Deploy_to_Simulator()
+endfunction
+
+map <Leader>b :call Interrupt_and_Send_to_Tmux("platinum compile\n")<CR>
+map <Leader>dd :call Interrupt_and_Send_to_Tmux("platinum deploy\n")<CR>
+map <Leader>di :call Deploy_to_iPad()<CR>
+map <Leader>dx :call Deploy_to_Xcode()<CR>
+map <Leader>ds :call Deploy_to_Simulator()<CR>
+map <Leader>dp :call Deploy_to_Testfairy()<CR>
+map <Leader>da :call Deploy_to_All()<CR>

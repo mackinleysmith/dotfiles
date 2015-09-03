@@ -23,6 +23,9 @@ set tm=2000
 
 " Allow the normal use of "," by pressing it twice
 noremap ,, ,
+"
+" Disable highlighting on Enter
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 " Use par for prettier line formatting
 set formatprg="PARINIT='rTbgqR B=.,?_A_a Q=_s>|' par\ -w72"
@@ -165,6 +168,7 @@ nnoremap <leader>mo :set mouse=<cr>
 
 " Default to mouse mode on
 set mouse=a
+set ttymouse=sgr
 " }}}
 
 " Colors and Fonts {{{

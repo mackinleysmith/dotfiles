@@ -28,6 +28,7 @@ Bundle 'smit1625/tslime.vim'
 Bundle 'suan/vim-instant-markdown'
 " Bundle 'godlygeek/tabular'
 " Bundle 'plasticboy/vim-markdown'
+Bundle 'rorymckinley/vim-rubyhash'
 Bundle 'jpo/vim-railscasts-theme'
 
 colorscheme railscasts
@@ -72,6 +73,9 @@ set tm=2000
 
 " Allow the normal use of "," by pressing it twice
 noremap ,, ,
+
+" Disable highlighting on Enter
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 function! Interrupt_and_Send_to_Tmux(command)
   call Send_keys_to_Tmux("C-c")
@@ -185,6 +189,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_scss_sass_args = "--load-path /Users/smit1625/.rvm/gems/ruby-2.2.2/gems/font-awesome-sass-4.3.2.1/assets/stylesheets"
 
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files

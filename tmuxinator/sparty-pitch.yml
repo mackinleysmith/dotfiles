@@ -28,6 +28,8 @@ windows:
   - background:
       layout: main-vertical
       panes:
-        - #empty
+        - main:
+          - bundle exec rake sunspot:solr:start
+          - bundle exec rake sunspot:solr:start RAILS_ENV=test
         - spring rails s
         - spring rails c
