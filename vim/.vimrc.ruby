@@ -77,13 +77,41 @@ noremap ,, ,
 " Disable highlighting on Enter
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
-function! Interrupt_and_Send_to_Tmux(command)
+function! Move_to_Tmux_Pane(pane)
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux("q")
+  call Send_keys_to_Tmux(a:pane)
+endfunction
+function! Interrupt_Tmux()
   call Send_keys_to_Tmux("C-c")
+endfunction
+function! Interrupt_and_Send_to_Tmux(command)
+  call Interrupt_Tmux()
   call Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_with_Preceding_Keys(keys, command)
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux(a:keys)
+  call Interrupt_and_Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_Pane(pane, command)
+  call Move_to_Tmux_Pane(a:pane)
+  call Interrupt_and_Send_to_Tmux(a:command)
+endfunction
+function! RunOnHost(fn) range
+  :wall
+  call Move_to_Tmux_Pane(0)
+  call RunWithRange(a:fn)
+endfunction
+function! RunOnSatellite(fn) range
+  :wall
+  call Move_to_Tmux_Pane(1)
+  call Interrupt_and_Send_to_Tmux("rsync -avzP --exclude=.git --exclude=log --exclude=tags --exclude=public/system --exclude=solr --exclude=tmp --exclude=test --exclude=\"**/*.swp\" --exclude=\"Session.vim\" pro:Sites/" . fnamemodify(getcwd(), ':t')  . "/ .; ")
+  call RunWithRange(a:fn)
 endfunction
 
 function! SetRspecCommand()
-  let g:rspec_command = 'call Interrupt_and_Send_to_Tmux("' . g:actual_rspec_command . '\n")'
+  let g:rspec_command = 'call Send_to_Tmux("' . g:actual_rspec_command . '\n")'
 endfunction
 function! RunWithRange(fn) range
   if v:count > 1
@@ -97,16 +125,21 @@ function! RunWithRange(fn) range
     call SetRspecCommand()
   endif
 endfunction
-let g:actual_rspec_command = 'spring rspec {spec}'
+let g:actual_rspec_command = 'sesh rspec {spec} --and-return'
 call SetRspecCommand()
-map <Leader>t :call RunWithRange("RunCurrentSpecFile")<CR>
-map <Leader>s :call RunWithRange("RunNearestSpec")<CR>
-map <Leader>l :call RunWithRange("RunLastSpec")<CR>
-map <Leader>a :call RunWithRange("RunAllSpecs")<CR>
 vmap <C-c><C-c> <Plug>SendSelectionToTmux
 nmap <C-c><C-c> <Plug>NormalModeSendToTmux
 nmap <C-c>r <Plug>SetTmuxVars
-map <Leader>m :Tmux<Space>
+nmap <Leader>t :call RunOnHost("RunCurrentSpecFile")<CR>
+nmap <Leader>s :call RunOnHost("RunNearestSpec")<CR>
+nmap <Leader>l :call RunOnHost("RunLastSpec")<CR>
+nmap <Leader>a :call RunOnHost("RunAllSpecs")<CR>
+nmap <Leader>mc :Tmux<Space>
+nmap <Leader>ms :call RunOnSatellite("RunNearestSpec")<CR>
+nmap <Leader>mt :call RunOnSatellite("RunCurrentSpecFile")<CR>
+nmap <Leader>ms :call RunOnSatellite("RunNearestSpec")<CR>
+nmap <Leader>ml :call RunOnSatellite("RunLastSpec")<CR>
+nmap <Leader>ma :call RunOnSatellite("RunAllSpecs")<CR>
 
 " Auto Paste {{{
 let &t_SI .= "\<Esc>[?2004h"
