@@ -11,13 +11,13 @@ root: ~/Sites/energy-innovation-award
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 # pre_window: rbenv shell 2.0.0-p247
-pre_window: rvm use 2.2.2
+pre_window: rvm use 2.2.3
 
 # Pass command line options to tmux. Useful for specifying a different tmux.conf.
 # tmux_options: -f ~/.tmux.mac.conf
 
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
-tmux_command: reattach-to-user-namespace tmux
+# tmux_command: reattach-to-user-namespace tmux
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
 # startup_window: logs
@@ -28,5 +28,9 @@ windows:
       panes:
         - #empty
         - zeus start
-        - zeus s
-        - zeus c
+        - server:
+          - sleep 3
+          - zeus s
+        - console:
+          - sleep 3
+          - zeus c

@@ -168,7 +168,7 @@ nnoremap <leader>mo :set mouse=<cr>
 
 " Default to mouse mode on
 set mouse=a
-set ttymouse=sgr
+" set ttymouse=sgr
 " }}}
 
 " Colors and Fonts {{{

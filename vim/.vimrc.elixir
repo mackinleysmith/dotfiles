@@ -1,0 +1,325 @@
+set nocp
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#rc(expand('~/dotfiles/vim/.vim.ruby/bundle'))
+
+Bundle 'tpope/vim-bundler'
+Bundle 'tpope/vim-rvm'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-haml'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-surround'
+Bundle 'tpope/timl'
+Bundle 'tpope/vim-obsession'
+Bundle 'tpope/vim-repeat'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'kien/ctrlp.vim'
+Bundle 'nathanaelkane/vim-indent-guides'
+Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
+" Bundle 'terryma/vim-multiple-cursors'
+Bundle 'thoughtbot/vim-rspec'
+Bundle 'tomtom/tcomment_vim'
+" Bundle 'Valloric/YouCompleteMe'
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'smit1625/tslime.vim'
+" Bundle 'suan/vim-instant-markdown'
+" Bundle 'godlygeek/tabular'
+" Bundle 'plasticboy/vim-markdown'
+" Bundle 'rorymckinley/vim-rubyhash'
+Bundle 'smit1625/vim-rubyhash'
+" Bundle 'Shougo/vimproc.vim'
+" Bundle 'osyo-manga/vim-monster'
+Bundle 'Shougo/deoplete.nvim'
+Bundle 'jpo/vim-railscasts-theme'
+Bundle 'tclem/vim-arduino'
+Bundle 'elixir-lang/vim-elixir'
+Bundle 'kassio/neoterm'
+
+colorscheme railscasts
+
+set shell=/bin/bash
+set tags=./tags
+set backspace=indent,eol,start
+set expandtab
+set tabstop=2 shiftwidth=2 softtabstop=2
+set number
+set laststatus=2
+set ruler
+set ttyfast
+set mouse=a
+" set ttymouse=sgr
+set colorcolumn=80
+set incsearch
+set hlsearch
+
+" let g:ycm_register_as_syntastic_checker = 0
+" let g:ycm_auto_trigger = 0
+" let g:monster#completion#rcodetools#backend = "async_rct_complete"
+" let g:neocomplete#sources#omni#input_patterns = {
+" \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+" \}
+" let g:deoplete#omni_patterns = {}
+" let g:deoplete#omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+let g:deoplete#enable_at_startup = 1
+set completeopt+=menuone
+set omnifunc=syntaxcomplete#Complete
+" let g:deoplete#sources#omni#input_patterns = {
+" \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+" \}
+inoremap <expr><TAB>     pumvisible() ? "<C-n>" : "<TAB>"
+inoremap <expr><S-TAB>   pumvisible() ? "<C-p>" : "<TAB>"
+inoremap <expr><C-CR>    pumvisible() ? "<C-y><C-CR>" : "<C-CR>"
+" inoremap <expr>.         pumvisible() ? "<C-y>".deoplete#mappings#smart_close_popup()."." : "."
+inoremap <expr><C-h>     deoplete#mappings#smart_close_popup()."<C-h>"
+inoremap <expr><BS>      deoplete#mappings#smart_close_popup()."<C-h>"
+
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=5
+
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" upon hitting escape to change modes,
+" send successive move-left and move-right
+" commands to immediately redraw the cursor
+" inoremap <special> <Esc> <Esc>hlll
+" don't blink the cursor
+set guicursor+=i:blinkwait0
+
+let g:rails_statusline = 1
+
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
+
+" Leader key timeout
+set tm=2000
+
+" Allow the normal use of "," by pressing it twice
+noremap ,, ,
+
+" Disable highlighting on Enter
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
+function! Git_Add_Current_File()
+  call neoterm#do("git add %:p")
+  " sleep 1
+  " call neoterm#close()
+  " let a:exitcmd = g:neoterm.last()["buffer_id"] . 'bw'
+  " echo "Buffer CMD: " . a:exitcmd
+  " execute(a:exitcmd)
+endfunction
+
+" fugitive git bindings
+" nnoremap <Leader>ga :Git add %:p<CR>
+" nnoremap <Leader>ga :call Git_Add_Current_File()<CR>
+nnoremap <Leader>ga :Gwrite<CR>
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gc :Gcommit -v -q<CR>
+nnoremap <Leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>ge :Gedit<CR>
+nnoremap <Leader>gr :Gread<CR>
+nnoremap <Leader>gw :Gwrite<CR><CR>
+nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <Leader>gg :Ggrep<Leader>
+nnoremap <Leader>gm :Gmove<Leader>
+nnoremap <Leader>gb :Git branch<Leader>
+nnoremap <Leader>go :Git checkout<Leader>
+" nnoremap <Leader>gps :Dispatch! git push<CR>
+" nnoremap <Leader>gpl :Dispatch! git pull<CR>
+nnoremap <Leader>gp :Gpush<CR>
+" nnoremap <Leader>gpl :Gpull<CR>
+
+" associate *.tasks with ruby filetype
+au BufRead,BufNewFile *.tasks setfiletype ruby
+
+function! Move_to_Tmux_Pane(pane)
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux("q")
+  call Send_keys_to_Tmux(a:pane)
+endfunction
+function! Interrupt_Tmux()
+  call Send_keys_to_Tmux("C-c")
+endfunction
+function! Interrupt_and_Send_to_Tmux(command)
+  call Interrupt_Tmux()
+  call Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_with_Preceding_Keys(keys, command)
+  call Send_keys_to_Tmux("C-a")
+  call Send_keys_to_Tmux(a:keys)
+  call Interrupt_and_Send_to_Tmux(a:command)
+endfunction
+function! Interrupt_and_Send_to_Tmux_Pane(pane, command)
+  call Move_to_Tmux_Pane(a:pane)
+  call Interrupt_and_Send_to_Tmux(a:command)
+endfunction
+function! RunOnHost(fn) range
+  :wall
+  call Move_to_Tmux_Pane(0)
+  call Interrupt_Tmux()
+  call RunWithRange(a:fn)
+endfunction
+function! RunOnSatellite(fn) range
+  :wall
+  call Move_to_Tmux_Pane(1)
+  call Interrupt_and_Send_to_Tmux("rsync -avzP --exclude=.git --exclude=log --exclude=tags --exclude=public/system --exclude=solr --exclude=tmp --exclude=test --exclude=\"**/*.swp\" --exclude=\"Session.vim\" pro:Sites/" . fnamemodify(getcwd(), ':t')  . "/ .; ")
+  call RunWithRange(a:fn)
+endfunction
+
+function! SetRspecCommand()
+  let g:rspec_command = 'call Send_to_Tmux("' . g:actual_rspec_command . '\n")'
+endfunction
+function! RunWithRange(fn) range
+  if v:count > 1
+    let a:backup_rspec_command = g:actual_rspec_command
+    let g:actual_rspec_command = 'for i in (seq ' . v:count . '); ' . g:actual_rspec_command . '; end'
+    call SetRspecCommand()
+  endif
+  call function(a:fn)()
+  if v:count > 1
+    let g:actual_rspec_command = a:backup_rspec_command
+    call SetRspecCommand()
+  endif
+endfunction
+let g:actual_rspec_command = 'sesh rspec {spec}'
+call SetRspecCommand()
+vmap <C-c><C-c> <Plug>SendSelectionToTmux
+nmap <C-c><C-c> <Plug>NormalModeSendToTmux
+nmap <C-c>r <Plug>SetTmuxVars
+nmap <Leader>t :call RunOnHost("RunCurrentSpecFile")<CR>
+nmap <Leader>s :call RunOnHost("RunNearestSpec")<CR>
+nmap <Leader>l :call RunOnHost("RunLastSpec")<CR>
+nmap <Leader>a :call RunOnHost("RunAllSpecs")<CR>
+nmap <Leader>mc :Tmux<Space>
+nmap <Leader>ms :call RunOnSatellite("RunNearestSpec")<CR>
+nmap <Leader>mt :call RunOnSatellite("RunCurrentSpecFile")<CR>
+nmap <Leader>ms :call RunOnSatellite("RunNearestSpec")<CR>
+nmap <Leader>ml :call RunOnSatellite("RunLastSpec")<CR>
+nmap <Leader>ma :call RunOnSatellite("RunAllSpecs")<CR>
+
+" Auto Paste {{{
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+function! XTermPasteBegin()
+  set pastetoggle=<Esc>[201~
+  set paste
+  return ""
+endfunction
+
+" NERDTree {{{
+
+" Close nerdtree after a file is selected
+let NERDTreeQuitOnOpen=1
+
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+function! ToggleFindNerd()
+  if IsNERDTreeOpen()
+    exec ':NERDTreeToggle'
+  else
+    exec ':NERDTreeFind'
+  endif
+endfunction
+
+" If nerd tree is closed, find current file, if open, close it
+nmap <silent> <leader>f <ESC>:call ToggleFindNerd()<CR>
+nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
+
+let g:NERDTreeMapHelp = '<F1>'
+let g:NERDTreeMapOpenSplit = '<C-x>'
+let g:NERDTreeMapOpenVSplit = '<C-v>'
+
+" Ctrl-P with Matcher
+let g:path_to_matcher = "/usr/local/bin/matcher"
+
+let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files . -co --exclude-standard']
+
+let g:ctrlp_match_func = { 'match': 'GoodMatch' }
+
+function! GoodMatch(items, str, limit, mmode, ispath, crfile, regex)
+
+  " Create a cache file if not yet exists
+  let cachefile = ctrlp#utils#cachedir().'/matcher.cache'
+  if !( filereadable(cachefile) && a:items == readfile(cachefile) )
+    call writefile(a:items, cachefile)
+  endif
+  if !filereadable(cachefile)
+    return []
+  endif
+
+  " a:mmode is currently ignored. In the future, we should probably do
+  " something about that. the matcher behaves like "full-line".
+  let cmd = g:path_to_matcher.' --limit '.a:limit.' --manifest '.cachefile.' '
+  if !( exists('g:ctrlp_dotfiles') && g:ctrlp_dotfiles )
+    let cmd = cmd.'--no-dotfiles '
+  endif
+  let cmd = cmd.a:str
+
+  return split(system(cmd), "\n")
+
+endfunction
+
+" Syntastic
+syntax on
+filetype on
+filetype indent on
+filetype plugin on
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_scss_sass_args = "--load-path $HOME/.rvm/gems/ruby-2.2.2/gems/font-awesome-sass-4.4.0/assets/stylesheets"
+
+" Tell vim to remember certain things when we exit
+"  '10  :  marks will be remembered for up to 10 previously edited files
+"  "100 :  will save up to 100 lines for each register
+"  :20  :  up to 20 lines of command-line history will be remembered
+"  %    :  saves and restores the buffer list
+"  n... :  where to save the viminfo files
+set viminfo='10,\"100,:20,%,n~/.viminfo
+" Restore last position on open
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END
+
+" RVM
+set statusline=
+set statusline+=%<                       " cut at start
+set statusline+=%2*\ [%n%H%M%R%W]\ %*       " buffer number, and flags
+set statusline+=\ 
+set statusline+=%-40f                    " relative path
+set statusline+=%=                        " seperate between right- and left-aligned
+set statusline+=%1*\ %y\ %*%*               " file type
+set statusline+=\ 
+set statusline+=%10\((%l/%L)%)            " line and column
+set statusline+=\ 
+set statusline+=%P                        " percentage of file
+set statusline+=\ 
+set statusline+=%1*\ %{rvm#statusline()}\ 
+
+if !has("gui_running")
+  :source $VIMRUNTIME/menu.vim
+  :set wildmenu
+  :set cpoptions-=<
+  " :set wildcharm=<C-Z>
+  " :map <F4> :emenu <C-Z>
+endif

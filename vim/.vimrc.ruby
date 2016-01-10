@@ -12,24 +12,30 @@ Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/timl'
 Bundle 'tpope/vim-obsession'
-" Bundle 'dhruvasagar/vim-prosession'
 Bundle 'tpope/vim-repeat'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'kien/ctrlp.vim'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
-Bundle 'terryma/vim-multiple-cursors'
+" Bundle 'terryma/vim-multiple-cursors'
 Bundle 'thoughtbot/vim-rspec'
 Bundle 'tomtom/tcomment_vim'
-Bundle 'Valloric/YouCompleteMe'
+" Bundle 'Valloric/YouCompleteMe'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'smit1625/tslime.vim'
-Bundle 'suan/vim-instant-markdown'
+" Bundle 'suan/vim-instant-markdown'
 " Bundle 'godlygeek/tabular'
 " Bundle 'plasticboy/vim-markdown'
-Bundle 'rorymckinley/vim-rubyhash'
+" Bundle 'rorymckinley/vim-rubyhash'
+Bundle 'smit1625/vim-rubyhash'
+" Bundle 'Shougo/vimproc.vim'
+" Bundle 'osyo-manga/vim-monster'
+Bundle 'Shougo/deoplete.nvim'
 Bundle 'jpo/vim-railscasts-theme'
+" Bundle 'tclem/vim-arduino'
+" Bundle 'elixir-lang/vim-elixir'
+Bundle 'kassio/neoterm'
 
 colorscheme railscasts
 
@@ -43,15 +49,37 @@ set laststatus=2
 set ruler
 set ttyfast
 set mouse=a
-set ttymouse=sgr
+" set ttymouse=sgr
 set colorcolumn=80
 set incsearch
 set hlsearch
+
+" let g:ycm_register_as_syntastic_checker = 0
+" let g:ycm_auto_trigger = 0
+" let g:monster#completion#rcodetools#backend = "async_rct_complete"
+" let g:neocomplete#sources#omni#input_patterns = {
+" \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+" \}
+" let g:deoplete#omni_patterns = {}
+" let g:deoplete#omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+let g:deoplete#enable_at_startup = 1
+set completeopt+=menuone
+set omnifunc=syntaxcomplete#Complete
+" let g:deoplete#sources#omni#input_patterns = {
+" \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+" \}
+inoremap <expr><TAB>     pumvisible() ? "<C-n>" : "<TAB>"
+inoremap <expr><S-TAB>   pumvisible() ? "<C-p>" : "<TAB>"
+inoremap <expr><C-CR>    pumvisible() ? "<C-y><C-CR>" : "<C-CR>"
+" inoremap <expr>.         pumvisible() ? "<C-y>".deoplete#mappings#smart_close_popup()."." : "."
+inoremap <expr><C-h>     deoplete#mappings#smart_close_popup()."<C-h>"
+inoremap <expr><BS>      deoplete#mappings#smart_close_popup()."<C-h>"
 
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=5
 
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 " upon hitting escape to change modes,
@@ -77,6 +105,39 @@ noremap ,, ,
 " Disable highlighting on Enter
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
+function! Git_Add_Current_File()
+  call neoterm#do("git add %:p")
+  " sleep 1
+  " call neoterm#close()
+  " let a:exitcmd = g:neoterm.last()["buffer_id"] . 'bw'
+  " echo "Buffer CMD: " . a:exitcmd
+  " execute(a:exitcmd)
+endfunction
+
+" fugitive git bindings
+" nnoremap <Leader>ga :Git add %:p<CR>
+" nnoremap <Leader>ga :call Git_Add_Current_File()<CR>
+nnoremap <Leader>ga :Gwrite<CR>
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gc :Gcommit -v -q<CR>
+nnoremap <Leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>ge :Gedit<CR>
+nnoremap <Leader>gr :Gread<CR>
+nnoremap <Leader>gw :Gwrite<CR><CR>
+nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <Leader>gg :Ggrep<Leader>
+nnoremap <Leader>gm :Gmove<Leader>
+nnoremap <Leader>gb :Git branch<Leader>
+nnoremap <Leader>go :Git checkout<Leader>
+" nnoremap <Leader>gps :Dispatch! git push<CR>
+" nnoremap <Leader>gpl :Dispatch! git pull<CR>
+nnoremap <Leader>gp :Gpush<CR>
+" nnoremap <Leader>gpl :Gpull<CR>
+
+" associate *.tasks with ruby filetype
+au BufRead,BufNewFile *.tasks setfiletype ruby
+
 function! Move_to_Tmux_Pane(pane)
   call Send_keys_to_Tmux("C-a")
   call Send_keys_to_Tmux("q")
@@ -101,6 +162,7 @@ endfunction
 function! RunOnHost(fn) range
   :wall
   call Move_to_Tmux_Pane(0)
+  call Interrupt_Tmux()
   call RunWithRange(a:fn)
 endfunction
 function! RunOnSatellite(fn) range
@@ -125,7 +187,7 @@ function! RunWithRange(fn) range
     call SetRspecCommand()
   endif
 endfunction
-let g:actual_rspec_command = 'sesh rspec {spec} --and-return'
+let g:actual_rspec_command = 'sesh rspec {spec}'
 call SetRspecCommand()
 vmap <C-c><C-c> <Plug>SendSelectionToTmux
 nmap <C-c><C-c> <Plug>NormalModeSendToTmux
@@ -213,16 +275,15 @@ syntax on
 filetype on
 filetype indent on
 filetype plugin on
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-" hi StatusLine ctermbg=White ctermfg=0
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
-let g:syntastic_scss_sass_args = "--load-path /Users/smit1625/.rvm/gems/ruby-2.2.2/gems/font-awesome-sass-4.3.2.1/assets/stylesheets"
+let g:syntastic_scss_sass_args = "--load-path $HOME/.rvm/gems/ruby-2.2.2/gems/font-awesome-sass-4.4.0/assets/stylesheets"
+" let g:syntastic_cpp_include_dirs = ["/Users/mackinleysmith/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino"]
+" let g:syntastic_cpp_remove_include_errors = 1
+" let g:syntastic_cpp_no_include_search = 1
 
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files

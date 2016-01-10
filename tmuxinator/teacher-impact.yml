@@ -27,6 +27,10 @@ windows:
       layout: main-vertical
       panes:
         - #empty
-        - ssh air -t "cd ~/Sites/teacher-impact-sync; eval \$SHELL -l; rvm use 2.2.2"
-        - spring rails s
-        - spring rails c
+        - zeus start
+        - server:
+          - sleep 3
+          - zeus s
+        - console:
+          - sleep 3
+          - zeus c

@@ -11,23 +11,15 @@ set fish_theme robbyrussell
 set fish_plugins git rails rvm bundler git node brew
 
 # Path to your custom folder (default path is $FISH/custom)
-set fish_custom $HOME/dotfiles/oh-my-fish
+set fish_custom $HOME/.dotfiles/oh-my-fish
 
 # Load oh-my-fish configuration.
 . $fish_path/oh-my-fish.fish
-
-# Aliases
-alias s='spring'
-alias vi='/usr/local/Cellar/vim/7.4.488/bin/vim'
-alias hvi='vi -u ~/.dotfiles/vim/.vimrc.haskell'
-alias hvim='hvi'
-alias rvi='vi -u ~/.dotfiles/vim/.vimrc.ruby'
-alias rvim='rvi'
-alias tivi='vi -u ~/.dotfiles/vim/.vimrc.titanium'
-alias tivim='tivi'
+. $HOME/.dotfiles/.config/fish/aliases.fish
 
 set PATH ~/.cabal/bin $PATH
 set PATH /Library/Haskell/bin $PATH
 set PATH ~/dotfiles/bin $PATH
+set PATH ~/.rvm/gems/ruby-2.2.2/bin $PATH
 
-set EDITOR rvi 
+set -x EDITOR nvim

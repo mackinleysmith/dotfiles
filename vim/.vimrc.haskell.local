@@ -1,4 +1,13 @@
+Bundle 'Shougo/deoplete.nvim'
+Bundle 'kassio/neoterm'
+
 set shell=/bin/bash
+set tags=./tags
+set incsearch
+set hlsearch
+
+let g:deoplete#enable_at_startup = 1
 let g:NERDTreeMapHelp = '<F1>'
 let g:NERDTreeMapOpenSplit = '<C-x>'
 let g:NERDTreeMapOpenVSplit = '<C-v>'
+
