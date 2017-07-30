@@ -1,25 +1,36 @@
-# Path to your oh-my-fish.
-set fish_path $HOME/.oh-my-fish
+set -x fish_greeting ""
+set -x fish_theme robbyrussell
 
-# Theme
-set fish_theme robbyrussell
-# set fish_theme coffeeandcode
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-fish/plugins/*)
-# Custom plugins may be added to ~/.oh-my-fish/custom/plugins/
-# Example format: set fish_plugins autojump bundler
-set fish_plugins git rails rvm bundler git node brew
-
-# Path to your custom folder (default path is $FISH/custom)
-set fish_custom $HOME/.dotfiles/oh-my-fish
+# Path to Oh My Fish install.
+set -gx OMF_PATH "$HOME/.local/share/omf"
 
 # Load oh-my-fish configuration.
-. $fish_path/oh-my-fish.fish
+source $OMF_PATH/init.fish
+
+set -x fish_plugins git rails rvm bundler node brew
+
+# Rake completion
+. $HOME/.dotfiles/.config/fish/rake_completion.fish
+
+# Load oh-my-fish configuration.
 . $HOME/.dotfiles/.config/fish/aliases.fish
+. $HOME/.dotfiles/.config/fish/secrets.fish
 
-set PATH ~/.cabal/bin $PATH
-set PATH /Library/Haskell/bin $PATH
-set PATH ~/dotfiles/bin $PATH
-set PATH ~/.rvm/gems/ruby-2.2.2/bin $PATH
+set -x PATH $HOME/.local/bin $PATH
+set -x PATH $HOME/.stack/programs/x86_64-osx/ghc-8.0.1/bin $PATH
+set -x PATH /Applications/Postgres.app/Contents/Versions/9.5/bin $PATH
+set -x PATH ~/.dotfiles/bin $PATH
+set -x PATH ~/Library/Android/sdk/platform-tools $PATH
+set -x PATH ~/Library/Android/sdk/tools $PATH
+set -x PATH $PATH ~/.rvm/gems/ruby-2.2.3/bin
 
+set -x PGHOST /var/pgsql_socket
+set -x SSL_CERT_FILE /usr/local/etc/openssl/cert.pem
 set -x EDITOR nvim
+set -x ANDROID_HOME $HOME/Library/Android/sdk
+
+# rvm default
+eval (direnv hook fish)
+set -g fish_user_paths "/usr/local/opt/e2fsprogs/bin" $fish_user_paths
+set -g fish_user_paths "/usr/local/opt/e2fsprogs/sbin" $fish_user_paths
+set -g fish_user_paths "/usr/local/sbin" $fish_user_paths

@@ -34,7 +34,7 @@ set formatprg="PARINIT='rTbgqR B=.,?_A_a Q=_s>|' par\ -w72"
 autocmd FileType haskell let &formatprg="stylish-haskell"
 
 " Find custom built ghc-mod, codex etc
-let $PATH = $PATH . ':' . expand("~/.haskell-vim-now/bin")
+let $PATH = $PATH . ':' . expand("~/Library/Haskell/bin") . ':' . expand("~/.haskell-vim-now/bin")
 
 " Kill the damned Ex mode.
 nnoremap Q <nop>
@@ -580,7 +580,8 @@ nmap <silent> <leader>ht :GhcModType<CR>
 " Insert type of expression under cursor
 nmap <silent> <leader>hT :GhcModTypeInsert<CR>
 " GHC errors and warnings
-nmap <silent> <leader>hc :SyntasticCheck ghc_mod<CR>
+" nmap <silent> <leader>hc :SyntasticCheck ghc_mod<CR>
+nmap <silent> <leader>hc :SyntasticCheck hdevtools<CR>
 " Haskell Lint
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['haskell'] }
 nmap <silent> <leader>hl :SyntasticCheck hlint<CR>

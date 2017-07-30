@@ -29,13 +29,16 @@ Bundle 'smit1625/tslime.vim'
 " Bundle 'plasticboy/vim-markdown'
 " Bundle 'rorymckinley/vim-rubyhash'
 Bundle 'smit1625/vim-rubyhash'
-" Bundle 'Shougo/vimproc.vim'
+Bundle 'Shougo/vimproc.vim'
 " Bundle 'osyo-manga/vim-monster'
 Bundle 'Shougo/deoplete.nvim'
 Bundle 'jpo/vim-railscasts-theme'
 " Bundle 'tclem/vim-arduino'
 " Bundle 'elixir-lang/vim-elixir'
 Bundle 'kassio/neoterm'
+Bundle 'leafgarland/typescript-vim.git'
+Bundle 'Quramy/tsuquyomi'
+Bundle 'burnettk/vim-angular'
 
 colorscheme railscasts
 
@@ -284,6 +287,9 @@ let g:syntastic_scss_sass_args = "--load-path $HOME/.rvm/gems/ruby-2.2.2/gems/fo
 " let g:syntastic_cpp_include_dirs = ["/Users/mackinleysmith/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino"]
 " let g:syntastic_cpp_remove_include_errors = 1
 " let g:syntastic_cpp_no_include_search = 1
+"
+" Angular HTML fix
+let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute " ,"trimming empty <", "unescaped &" , "lacks \"action", "is not recognized!", "discarding unexpected", " attribute name "]
 
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files

@@ -1,2 +1,10 @@
+.DS_Store
 vim/**/bundle/**
 vim/**/bundle_backup
+.config/configstore
+.config/direnv
+.config/fish/fish_history
+.config/fish/fishd.*
+.config/heroku
+.config/karabiner
+.config/fish/secrets.fish

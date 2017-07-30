@@ -1,0 +1,3 @@
+syntax on
+au FileType gitcommit set tw=72
+set viminfo&
